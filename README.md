@@ -34,9 +34,11 @@ In order to correct this, the ADC needed to be calibrated.
 
 ### ADC Calibration
 
-The calibration has been done setting different resistors values at the input, checking the converted ADC and observing the value at the output. The following graph shows all the measures made and can be found in this [Google Sheets document]:(https://docs.google.com/spreadsheets/d/1w78oADKGyZ6T9LdS9Efq9nlCd5ekKN-49e6IdjmsagY/edit?usp=sharing)
+The calibration has been done setting different resistors values at the input, checking the converted ADC and observing the value at the output. The following graph shows all the measures made and can be found in this [Google Sheets document](https://docs.google.com/spreadsheets/d/1w78oADKGyZ6T9LdS9Efq9nlCd5ekKN-49e6IdjmsagY/edit?usp=sharing). All maths calaulations are found in this [Matcha file](https://www.mathcha.io/editor/xp89hYWivrhkosYB)
 
 ![calibration-values1](https://user-images.githubusercontent.com/18221570/49331802-25f3a900-f5a3-11e8-88de-f1f7db8116bd.PNG)
+
+![adc in](https://user-images.githubusercontent.com/18221570/49338608-a5c15800-f623-11e8-9a2f-d6b8ea7f7a65.PNG) 
 
 In the following graph we can see the ADC value read by the firmware for all given Voltage in values. In the X-Axis we have the voltage in that we have given and in the Y-Axis, the ADC. This can be represented by a linear function of order 1.
 
@@ -44,14 +46,25 @@ ADC = a Vin + b Using the values in the table we can isolate and find the values
 
 ![calibration-values2](https://user-images.githubusercontent.com/18221570/49331804-28560300-f5a3-11e8-8163-507851b9b7b6.PNG)
 
+![pwmout](https://user-images.githubusercontent.com/18221570/49338617-c2f62680-f623-11e8-839f-aa49e3bae87d.PNG)
+
 In a different way, the Voltage out is a function of a given PWM dutty. Since we took a PWM equal to the ADC we have on the X-Axis the ADC reading and in the Y-Axis the Vout. 
 
 The following graph shows how the Vout differs from the Vin. This expains again why the conversion has to be calibrated.
 
 ![calibration-values3](https://user-images.githubusercontent.com/18221570/49331805-2a1fc680-f5a3-11e8-81f7-b917a774e522.PNG)
 
+![vbin vout](https://user-images.githubusercontent.com/18221570/49338622-e02af500-f623-11e8-8a7d-4944a2cdbe93.PNG)
+
 Finally we can see how after isolating the ADC out as a function of the ADC in the Vout equals the Vin. This can also be seen in the Youtube video.
 
 ![calibration-values4](https://user-images.githubusercontent.com/18221570/49331806-2be98a00-f5a3-11e8-85fe-031b29821da1.PNG)
+
+![calibration](https://user-images.githubusercontent.com/18221570/49338627-f33dc500-f623-11e8-936e-37df5459daf1.PNG)
+
+## Resources
+
+- [Data Analysis Google Sheets document](https://docs.google.com/spreadsheets/d/1w78oADKGyZ6T9LdS9Efq9nlCd5ekKN-49e6IdjmsagY/edit?usp=sharing)
+- [Calculations Matcha file](https://www.mathcha.io/editor/xp89hYWivrhkosYB)
 
 
