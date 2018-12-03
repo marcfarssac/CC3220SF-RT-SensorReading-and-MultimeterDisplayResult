@@ -36,15 +36,14 @@ In order to correct this, the ADC needed to be calibrated.
 
 The calibration has been done setting different resistors values at the input, checking the converted ADC and observing the value at the output. The following graph shows all the measures made and can be found in this [Google Sheets document](https://docs.google.com/spreadsheets/d/1w78oADKGyZ6T9LdS9Efq9nlCd5ekKN-49e6IdjmsagY/edit?usp=sharing). All maths calaulations are found in this [Matcha file](https://www.mathcha.io/editor/xp89hYWivrhkosYB)
 
-![calibration-values1](https://user-images.githubusercontent.com/18221570/49331802-25f3a900-f5a3-11e8-88de-f1f7db8116bd.PNG)
-
+![calibration-values1](https://user-images.githubusercontent.com/18221570/49371079-8e06d400-f6f6-11e8-95c6-2c513bdbf6a4.PNG)
 ![adc in](https://user-images.githubusercontent.com/18221570/49338608-a5c15800-f623-11e8-9a2f-d6b8ea7f7a65.PNG) 
 
 In the following graph we can see the ADC value read by the firmware for all given Voltage in values. In the X-Axis we have the voltage in that we have given and in the Y-Axis, the ADC. This can be represented by a linear function of order 1.
 
 ADC = a Vin + b Using the values in the table we can isolate and find the values of a and b.
 
-![calibration-values2](https://user-images.githubusercontent.com/18221570/49331804-28560300-f5a3-11e8-8163-507851b9b7b6.PNG)
+![calibration-values2](https://user-images.githubusercontent.com/18221570/49371078-8e06d400-f6f6-11e8-82a2-2195fef8817b.PNG)
 
 ![pwmout](https://user-images.githubusercontent.com/18221570/49338617-c2f62680-f623-11e8-839f-aa49e3bae87d.PNG)
 
@@ -52,19 +51,41 @@ In a different way, the Voltage out is a function of a given PWM dutty. Since we
 
 The following graph shows how the Vout differs from the Vin. This expains again why the conversion has to be calibrated.
 
-![calibration-values3](https://user-images.githubusercontent.com/18221570/49331805-2a1fc680-f5a3-11e8-81f7-b917a774e522.PNG)
+![calibration-values3](https://user-images.githubusercontent.com/18221570/49371076-8d6e3d80-f6f6-11e8-83af-51fbd0c0919c.PNG)
 
 ![vbin vout](https://user-images.githubusercontent.com/18221570/49338622-e02af500-f623-11e8-8a7d-4944a2cdbe93.PNG)
 
 Finally we can see how after isolating the ADC out as a function of the ADC in the Vout equals the Vin. This can also be seen in the Youtube video.
 
-![calibration-values4](https://user-images.githubusercontent.com/18221570/49331806-2be98a00-f5a3-11e8-85fe-031b29821da1.PNG)
+![calibration-values4](https://user-images.githubusercontent.com/18221570/49371075-8d6e3d80-f6f6-11e8-94c1-de06bc3b0213.PNG)
 
 ![calibration](https://user-images.githubusercontent.com/18221570/49338627-f33dc500-f623-11e8-936e-37df5459daf1.PNG)
+
+However there is one thing that is surprising. The Vin and Vout are linear and also the ADC reading. So why is the calibration not linear? 
+
+### Non linearity of the calibration factor
+
+There are a few things that need to be taken into account. 
+
+At the Voltage in:
+- Inaccuracy of the reference voltage, which can easily introduce an error of twenty counts with only a 60mv variation using a 10-bit ADC. Twenty counts represent almost 5% error in the ADC value provided at low voltages.
+- Measurement errors of the Vin at low voltages. These errors are introduced by the human reading of the values shown in the multimeter, which lack accuracy at the milivolt level.
+- Measurement errors introduce by the multimeter lacking calibration.
+
+At the voltage out:
+- Not using a True-RMS multimeter provides an approximate reading. The DV value read at the output is the result of sampling a PWM signal, which introduces some errors too.
 
 ## Resources
 
 - [Data Analysis Google Sheets document](https://docs.google.com/spreadsheets/d/1w78oADKGyZ6T9LdS9Efq9nlCd5ekKN-49e6IdjmsagY/edit?usp=sharing)
 - [Calculations Matcha file](https://www.mathcha.io/editor/xp89hYWivrhkosYB)
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=\begin{table}[!h]&space;\centering&space;\begin{tabular}{|p{0.90809\textwidth}|}&space;\hline&space;ADC$\displaystyle&space;_{in\&space;}&space;=\&space;m_{in}&space;\&space;\times&space;\&space;V_{in}&space;\&space;&plus;\&space;b_{1}$\\&space;\hline&space;\end{tabular}&space;\end{table}&space;\begin{gather*}&space;where\&space;m_{in}&space;\&space;=\frac{\Delta&space;ADC_{in}}{\Delta&space;V_{in}}&space;\&space;=\&space;\frac{(&space;3870\&space;-\&space;324)&space;\&space;}{(&space;3,26\&space;-\&space;3)}&space;\&space;=\&space;1182\&space;\\&space;\\&space;and\&space;b_{1}&space;\&space;=\&space;ADC_{in}&space;\&space;-\&space;1182\&space;\times&space;\&space;V_{in}\\&space;\\&space;b_{ADC_{in}&space;\&space;=\&space;324\&space;}&space;\&space;=\&space;324\&space;-\&space;1182\&space;\times&space;\&space;0,26\&space;=\&space;16,\&space;68\\&space;\end{gather*}&space;\begin{table}[!h]&space;\centering&space;\begin{tabular}{|p{0.90602\textwidth}|}&space;\hline&space;ADC$\displaystyle&space;_{in\&space;}&space;=\&space;1182\&space;\times&space;V_{in}&space;\&space;&plus;\&space;16,68$\\&space;\hline&space;\end{tabular}&space;\end{table}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\begin{table}[!h]&space;\centering&space;\begin{tabular}{|p{0.90809\textwidth}|}&space;\hline&space;ADC$\displaystyle&space;_{in\&space;}&space;=\&space;m_{in}&space;\&space;\times&space;\&space;V_{in}&space;\&space;&plus;\&space;b_{1}$\\&space;\hline&space;\end{tabular}&space;\end{table}&space;\begin{gather*}&space;where\&space;m_{in}&space;\&space;=\frac{\Delta&space;ADC_{in}}{\Delta&space;V_{in}}&space;\&space;=\&space;\frac{(&space;3870\&space;-\&space;324)&space;\&space;}{(&space;3,26\&space;-\&space;3)}&space;\&space;=\&space;1182\&space;\\&space;\\&space;and\&space;b_{1}&space;\&space;=\&space;ADC_{in}&space;\&space;-\&space;1182\&space;\times&space;\&space;V_{in}\\&space;\\&space;b_{ADC_{in}&space;\&space;=\&space;324\&space;}&space;\&space;=\&space;324\&space;-\&space;1182\&space;\times&space;\&space;0,26\&space;=\&space;16,\&space;68\\&space;\end{gather*}&space;\begin{table}[!h]&space;\centering&space;\begin{tabular}{|p{0.90602\textwidth}|}&space;\hline&space;ADC$\displaystyle&space;_{in\&space;}&space;=\&space;1182\&space;\times&space;V_{in}&space;\&space;&plus;\&space;16,68$\\&space;\hline&space;\end{tabular}&space;\end{table}" title="\begin{table}[!h] \centering \begin{tabular}{|p{0.90809\textwidth}|} \hline ADC$\displaystyle _{in\ } =\ m_{in} \ \times \ V_{in} \ +\ b_{1}$\\ \hline \end{tabular} \end{table} \begin{gather*} where\ m_{in} \ =\frac{\Delta ADC_{in}}{\Delta V_{in}} \ =\ \frac{( 3870\ -\ 324) \ }{( 3,26\ -\ 3)} \ =\ 1182\ \\ \\ and\ b_{1} \ =\ ADC_{in} \ -\ 1182\ \times \ V_{in}\\ \\ b_{ADC_{in} \ =\ 324\ } \ =\ 324\ -\ 1182\ \times \ 0,26\ =\ 16,\ 68\\ \end{gather*} \begin{table}[!h] \centering \begin{tabular}{|p{0.90602\textwidth}|} \hline ADC$\displaystyle _{in\ } =\ 1182\ \times V_{in} \ +\ 16,68$\\ \hline \end{tabular} \end{table}" /></a>
+## License
+Copyright 2018 Marc Farssac
+
+Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
