@@ -41,10 +41,13 @@
 
 /* Driver Header files */
 #include <ti/drivers/ADC.h>
+#include <ti/drivers/PWM.h>
 #include <ti/display/Display.h>
+#include <ti/drivers/GPIO.h>
 
-/* Example/Board Header files */
+/* Board Header files */
 #include "Board.h"
+//#include "ADCReading.h"
 
 /* ADC sample count */
 #define ADC_SAMPLE_COUNT  (10)
@@ -52,10 +55,28 @@
 #define THREADSTACKSIZE   (768)
 
 /* ADC conversion result variables */
+
 uint16_t adcValue0;
+bool calibrate;
 uint32_t adcValue0MicroVolt;
 uint16_t adcValue1[ADC_SAMPLE_COUNT];
 uint32_t adcValue1MicroVolt[ADC_SAMPLE_COUNT];
+
+/*
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct ADCReading adcReading;
+void adcReading_setCalibration(bool enable);
+bool adcReading_getCalibration();
+void adcReading_setADCValue(uint16_t adcValue);
+uint16_t ADCReading_getADCValue();
+
+#ifdef __cplusplus
+}
+#endif
+*/
 
 static Display_Handle display;
 
@@ -63,12 +84,14 @@ static Display_Handle display;
  *  ======== threadFxn0 ========
  *  Open an ADC instance and get a sampling result from a one-shot conversion.
  */
-void *threadFxn0(void *arg0)
+void *threadADCRead(void *arg0)
 {
     ADC_Handle   adc;
     ADC_Params   params;
     int_fast16_t res;
+    uint32_t   time = 50000;
 
+    ADC_init();
     ADC_Params_init(&params);
     adc = ADC_open(Board_ADC0, &params);
 
@@ -78,7 +101,11 @@ void *threadFxn0(void *arg0)
     }
 
     /* Blocking mode conversion */
+
+    while (1) {
+
     res = ADC_convert(adc, &adcValue0);
+    //adcReading_setADCValue(adcValue0);
 
     if (res == ADC_STATUS_SUCCESS) {
 
@@ -91,6 +118,9 @@ void *threadFxn0(void *arg0)
     else {
         Display_printf(display, 0, 0, "ADC channel 0 convert failed\n");
     }
+    usleep(time);
+
+    }
 
     ADC_close(adc);
 
@@ -102,41 +132,51 @@ void *threadFxn0(void *arg0)
  *  Open a ADC handle and get an array of sampling results after
  *  calling several conversions.
  */
-void *threadFxn1(void *arg0)
+void *threadADCWrite(void *arg0)
 {
-    uint16_t     i;
-    ADC_Handle   adc;
-    ADC_Params   params;
-    int_fast16_t res;
+    /* Period and duty in microseconds */
+    uint16_t   pwmPeriod = 4500;
 
-    ADC_Params_init(&params);
-    adc = ADC_open(Board_ADC1, &params);
+    /* Sleep time in microseconds */
+    uint32_t   time = 50000;
+    PWM_Handle pwm1 = NULL;
+    PWM_Params params;
 
-    if (adc == NULL) {
-        Display_printf(display, 0, 0, "Error initializing ADC channel 1\n");
+    PWM_init();
+    PWM_Params_init(&params);
+    params.dutyUnits = PWM_DUTY_US;
+    params.dutyValue = 0;
+    params.periodUnits = PWM_PERIOD_US;
+    params.periodValue = pwmPeriod;
+    pwm1 = PWM_open(Board_PWM0, &params);
+    if (pwm1 == NULL) {
+        /* Board_PWM0 did not open */
         while (1);
     }
 
-    for (i = 0; i < ADC_SAMPLE_COUNT; i++) {
-        res = ADC_convert(adc, &adcValue1[i]);
+    PWM_start(pwm1);
 
-        if (res == ADC_STATUS_SUCCESS) {
+    while (1) {
 
-            adcValue1MicroVolt[i] = ADC_convertRawToMicroVolts(adc, adcValue1[i]);
-
-            Display_printf(display, 0, 0, "ADC channel 1 raw result (%d): %d\n", i,
-                           adcValue1[i]);
-            Display_printf(display, 0, 0, "ADC channel 1 convert result (%d): %d uV\n", i,
-                adcValue1MicroVolt[i]);
-        }
-        else {
-            Display_printf(display, 0, 0, "ADC channel 1 convert failed (%d)\n", i);
-        }
+    if (calibrate) {PWM_setDuty(pwm1, (adcValue0 - 91.4)/0.827);}
+    else {PWM_setDuty(pwm1, adcValue0);}
+    usleep(time);
     }
 
-    ADC_close(adc);
-
     return (NULL);
+}
+
+/*
+ *  ======== gpioButtonFxn3 ========
+ *  Callback function for the GPIO interrupt on Board_GPIO_BUTTON1.
+ *  This may not be used for all boards.
+ */
+void gpioButtonPushed(uint_least8_t index)
+{
+    /* Clear the GPIO interrupt and toggle an LED */
+    //adcReading_setCalibration(!adcReading_getCalibration());
+    calibrate = !calibrate;
+    GPIO_toggle(Board_GPIO_LED0);
 }
 
 /*
@@ -144,14 +184,25 @@ void *threadFxn1(void *arg0)
  */
 void *mainThread(void *arg0)
 {
-    pthread_t           thread0, thread1;
+    pthread_t           threadRead, threadWrite;
     pthread_attr_t      attrs;
     struct sched_param  priParam;
     int                 retc;
     int                 detachState;
 
+    calibrate = false;
     /* Call driver init functions */
-    ADC_init();
+    GPIO_init();
+
+    GPIO_setConfig(Board_GPIO_LED0, GPIO_CFG_OUT_STD | GPIO_CFG_OUT_LOW);
+    GPIO_setConfig(Board_GPIO_BUTTON0, GPIO_CFG_IN_PU | GPIO_CFG_IN_INT_FALLING);
+
+    /* install Button callback */
+    GPIO_setCallback(Board_GPIO_BUTTON0, gpioButtonPushed);
+
+    /* Enable interrupts */
+    GPIO_enableInt(Board_GPIO_BUTTON0);
+
     Display_init();
 
     /* Open the display for output */
@@ -161,7 +212,7 @@ void *mainThread(void *arg0)
         while (1);
     }
 
-    Display_printf(display, 0, 0, "Starting the acdsinglechannel example\n");
+    Display_printf(display, 0, 0, "Starting the adc\n");
 
     /* Create application threads */
     pthread_attr_init(&attrs);
@@ -184,14 +235,13 @@ void *mainThread(void *arg0)
     priParam.sched_priority = 1;
     pthread_attr_setschedparam(&attrs, &priParam);
 
-    retc = pthread_create(&thread0, &attrs, threadFxn0, NULL);
+    retc = pthread_create(&threadRead, &attrs, threadADCRead, NULL);
     if (retc != 0) {
         /* pthread_create() failed */
         while (1);
     }
 
-    /* Create threadFxn1 thread */
-    retc = pthread_create(&thread1, &attrs, threadFxn1, (void* )0);
+    retc = pthread_create(&threadWrite, &attrs, threadADCWrite, NULL);
     if (retc != 0) {
         /* pthread_create() failed */
         while (1);

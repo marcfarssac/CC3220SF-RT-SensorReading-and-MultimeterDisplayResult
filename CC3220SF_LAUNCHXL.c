@@ -224,6 +224,8 @@ void CC3220SF_LAUNCHXL_initGeneral(void)
  */
 GPIO_PinConfig gpioPinConfigs[] = {
     /* input pins with callbacks */
+    /* CC3220SF_LAUNCHXL_GPIO_06 */
+    GPIOCC32XX_GPIO_07 | GPIO_CFG_INPUT | GPIO_CFG_IN_INT_RISING,
     /* CC3220SF_LAUNCHXL_GPIO_SW2 */
     GPIOCC32XX_GPIO_13 | GPIO_CFG_INPUT | GPIO_CFG_IN_INT_RISING,
     /* CC3220SF_LAUNCHXL_GPIO_SW3 */
@@ -262,6 +264,7 @@ GPIO_PinConfig gpioPinConfigs[] = {
  *       reduce memory usage (if placed at end of gpioPinConfigs array).
  */
 GPIO_CallbackFxn gpioCallbackFunctions[] = {
+    NULL,  /* CC3220SF_LAUNCHXL_GPIO_06 */
     NULL,  /* CC3220SF_LAUNCHXL_GPIO_SW2 */
     NULL,  /* CC3220SF_LAUNCHXL_GPIO_SW3 */
     NULL,  /* CC3220SF_LAUNCHXL_SPI_MASTER_READY */

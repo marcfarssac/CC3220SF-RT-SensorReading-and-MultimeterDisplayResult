@@ -12,8 +12,9 @@ GEN_CMDS += C:/TICC3220SF/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug/conf
 GEN_CMDS__FLAG := -l"C:/TICC3220SF/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug/configPkg/linker.cmd"
 
 ORDERED_OBJS += \
+"./ADCReading.obj" \
 "./CC3220SF_LAUNCHXL.obj" \
-"./adcsinglechannel.obj" \
+"./adcReadWrite.obj" \
 "./main_tirtos.obj" \
 "../CC3220SF_LAUNCHXL_TIRTOS.cmd" \
 -l"ti/display/lib/display.aem4" \
@@ -131,38 +132,38 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.out \
+adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.out \
 
 EXE_OUTPUTS__QUOTED += \
-"adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.out" \
+"adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.out" \
 
 BIN_OUTPUTS += \
-adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.bin \
+adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.bin \
 
 BIN_OUTPUTS__QUOTED += \
-"adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.bin" \
+"adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.bin" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.out"
+	@$(MAKE) --no-print-directory -Onone "adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.out"
 
 dependents:
-	-cd C:/TICC3220SF/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug && $(MAKE) clean all
+	-cd C:/TICC3220SF/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug && $(MAKE) all
 
 # Tool invocations
-adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/TICC3220SF/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs.lib
+adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/TICC3220SF/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs/Debug/tirtos_builds_CC3220SF_LAUNCHXL_release_ccs.lib
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on -z -m"adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.map" -i"C:/ti/simplelink_cc32xx_sdk_2_30_00_05/source" -i"C:/ti/simplelink_cc32xx_sdk_2_30_00_05/kernel/tirtos/packages" -i"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/lib" --diag_wrap=off --display_error_number --warn_sections --xml_link_info="adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs_linkInfo.xml" --rom_model -o "adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me -g --diag_warning=225 --diag_warning=255 --diag_wrap=off --display_error_number --gen_func_subsections=on -z -m"adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.map" -i"C:/ti/simplelink_cc32xx_sdk_2_30_00_05/source" -i"C:/ti/simplelink_cc32xx_sdk_2_30_00_05/kernel/tirtos/packages" -i"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/lib" --diag_wrap=off --display_error_number --warn_sections --xml_link_info="adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs_linkInfo.xml" --rom_model -o "adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
 
-adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.bin: $(EXE_OUTPUTS)
+adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.bin: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armhex"  -o "adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.bin" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armhex"  -o "adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -170,13 +171,14 @@ adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.bin: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "CC3220SF_LAUNCHXL.obj" "adcsinglechannel.obj" "main_tirtos.obj" 
-	-$(RM) "CC3220SF_LAUNCHXL.d" "adcsinglechannel.d" "main_tirtos.d" 
+	-$(RM) "ADCReading.obj" "CC3220SF_LAUNCHXL.obj" "adcReadWrite.obj" "main_tirtos.obj" 
+	-$(RM) "CC3220SF_LAUNCHXL.d" "adcReadWrite.d" "main_tirtos.d" 
+	-$(RM) "ADCReading.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
 post-build:
-	-C:/ti/ccsv8/utils/tiobj2bin/tiobj2bin adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.out adcsinglechannel_CC3220SF_LAUNCHXL_tirtos_ccs.bin C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armofd C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armhex C:/ti/ccsv8/utils/tiobj2bin/mkhex4bin
+	-C:/ti/ccsv8/utils/tiobj2bin/tiobj2bin adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.out adcReadWrite_CC3220SF_LAUNCHXL_tirtos_ccs.bin C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armofd C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.9.0.STS/bin/armhex C:/ti/ccsv8/utils/tiobj2bin/mkhex4bin
 	-@echo ' '
 
 .PHONY: all clean dependents
