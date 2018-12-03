@@ -8,9 +8,27 @@
 
 This repository is part of a bigger "Mobile and IoT project", composed of an Android Things module working as a Gateway for Bluetooth Low Energy sensors that uploads telemetry values to the Cloud, an Android Application that shows the sensor values in real time and this module, that creates a Sub 1-Ghz MASH network where additional sensors subscribe and publish their readings to the same Google IoT core.
 
-The firmware found in this repository has been written in C for the CC3220 Microcontroller and creates two threads, one to make the readings of the ADC and the other to set the values to the DAC using a Pulse Width Modulation.
+I have written the firmware found in this repository in C for the CC3220 Microcontroller and creates two threads, one to make the readings of the ADC and the other to set the values to the DAC using a Pulse Width Modulation.
 
 The different repositories have been developed by [Marc Farssac](https://github.com/marcfarssac) and can be found under his [Github](https://github.com/marcfarssac) account. 
+
+### Youtube Video (Project summary)
+
+[![Watch the video](https://user-images.githubusercontent.com/18221570/49393651-28383d80-f732-11e8-8756-1fcd79d88fa2.PNG)](https://youtu.be/QPvVPHSGuN0?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn)
+
+[Summary YouTube video link](https://youtu.be/QPvVPHSGuN0?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn):[https://youtu.be/QPvVPHSGuN0?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn](https://youtu.be/QPvVPHSGuN0?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn)
+
+### Youtube Video (Extended explanations)
+
+[![Watch the video](https://user-images.githubusercontent.com/18221570/49393650-28383d80-f732-11e8-98a8-a041cd77c540.PNG)](https://youtu.be/oZzbYkJpgOQ?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn)
+
+[Extended YouTube video link](https://youtu.be/oZzbYkJpgOQ?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn) : [https://youtu.be/oZzbYkJpgOQ?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn](https://youtu.be/oZzbYkJpgOQ?list=PLk7A4gvo5SIdjq2N2y8oxlR_yW7zcPpmn)
+
+### Screenshoots
+
+|ADC Calibration setup|Whole IoT Sensor Readings project       |
+|-----------|-----------|
+|<img src="https://user-images.githubusercontent.com/18221570/49393839-a4cb1c00-f732-11e8-92e8-a1d7477e12b4.jpg" width=500></img> | <img src="https://user-images.githubusercontent.com/18221570/49393842-a563b280-f732-11e8-9693-cbcf68faf682.jpg" width=500></img>|
 
 ## Background
 
@@ -21,6 +39,12 @@ The characteristic of this MCU platform allows to build networks of distributed 
 ## Current status
 
 Currently the firmware allows to make the measurement of one thermistor and displays its value. Since the 16x2 LCD displays I had at hand are not supported by the drivers of the SDKs I have substituted it by the LCD of a multimeter. In order to display the temperature reading on the multimeter I have set an analog output with the reading of the analog input.
+
+### Data Analysis
+
+|ADC and PWM Measurements |Mathematical analysis       |
+|-----------|-----------|
+|<img src="https://user-images.githubusercontent.com/18221570/49394144-6da93a80-f733-11e8-8945-6aff1a637f43.PNG" width=400 height="200"></img><br/>[Watch the measurements](https://docs.google.com/spreadsheets/d/1w78oADKGyZ6T9LdS9Efq9nlCd5ekKN-49e6IdjmsagY/edit?usp=sharing)| <img src="https://user-images.githubusercontent.com/18221570/49394142-6d10a400-f733-11e8-9587-d2ac038cc48b.PNG" width=400 height="200"></img><br/>[Review the Mathematical Analysis](https://www.mathcha.io/editor/xp89hYWivrhkosYB)|
 
 ### ADC Conversion of the analog temperature sensor voltage
 
